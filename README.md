@@ -1,7 +1,7 @@
 # Seekret - BE - Traffic Analyzer
 ### Author: Tamir Mayblat
 
-This is the traffic analyzer web for the BE-Challenge, developed using Java.
+This is the traffic analyzer web for the BE-Challenge, developed using Java as a spring boot application.
 
 ### Prerequisite
 * Java and tomcat
@@ -22,7 +22,7 @@ You can find the following apis in the web service:
 * Groups requests by service name using a simple regex on the uri
 * Finds the service name from the uri filed and matches to regex.
 * If match found saves all data to Mongodb in ```requests``` table.
-* After the file has been processed it will be moved to the backup folder.
+* After a json file has been processed it will be moved to the backup folder regardless of any errors or issues during the process
 
 ###### GET /sb/busy - 
 * retrieving N most “busy” services (busy service == with most requests to it) in descending order from db.
