@@ -3,7 +3,7 @@
 
 This is the traffic analyzer web for the BE-Challenge, developed using Java.
 
-### prerequisite
+### Prerequisite
 * Java and tomcat
 * Run ```mvn clean install```
 * Make sure that regex.json file in the project's resources folder, it should be there by default.
@@ -34,3 +34,6 @@ You can find the following apis in the web service:
 * deletes all saved data for a given service (bonus 2).
   
 Also, the server can respond to dynamic changes of regex.json file (bonus 1)
+
+Please let me know if anything is missing or needs modifications. 
+Thanks!
