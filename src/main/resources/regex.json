@@ -1,0 +1,7 @@
+{
+  "\/compute.*": "compute",
+  "\/identity.*": "identity",
+  "\/image.*": "image",
+  "\/volume.*": "volume",
+  "\/placement.*": "placement"
+}
