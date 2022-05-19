@@ -1,7 +1,7 @@
 # Seekret - BE - Traffic Analyzer
 ### Author: Tamir Mayblat
 
-This is the traffic analyzer web for the BE-Challenge, developed using Java as a spring boot application.
+This is the traffic analyzer for the Seekret BE-Challenge, developed using Java as a spring boot application.
 
 ### Prerequisite
 * Java and tomcat

@@ -17,8 +17,14 @@ import java.util.Collections;
 @EnableMongoRepositories(basePackages = "com.seekbe.parser.repositories")
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
-    @Value("${db.credentials}")
-    private String dbCredentials;
+    @Value("${db.url}")
+    private String dbUrl;
+
+    @Value("${db.user}")
+    private String dbUser;
+
+    @Value("${db.pass}")
+    private String pass;
 
     @Value("${db.name}")
     private String dbName;
@@ -30,6 +36,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Override
     public MongoClient mongoClient() {
+        String dbCredentials = String.format(dbUrl, dbUser, pass);
         ConnectionString connectionString = new ConnectionString(dbCredentials);
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
