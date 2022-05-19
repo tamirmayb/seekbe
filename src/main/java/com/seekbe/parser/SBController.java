@@ -1,6 +1,7 @@
 package com.seekbe.parser;
 
 import com.seekbe.parser.dto.BusyDTO;
+import com.seekbe.parser.model.Method;
 import com.seekbe.parser.model.Request;
 import com.seekbe.parser.services.RequestService;
 import io.swagger.annotations.ApiOperation;
@@ -36,7 +37,7 @@ public class SBController {
 
     @GetMapping("/stats")
     @ApiOperation(value = "",  notes = "")
-    public ResponseEntity<List<Request>> getStats(@RequestParam String serviceName, @RequestParam String method) {
+    public ResponseEntity<List<Request>> getStats(@RequestParam String serviceName, @RequestParam Method method) {
         try {
             return ResponseEntity.ok(requestService.findByServiceNameAndMethod(serviceName, method));
         } catch (Exception e) {

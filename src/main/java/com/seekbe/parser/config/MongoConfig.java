@@ -30,7 +30,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     private String dbName;
 
     @Override
-    protected String getDatabaseName() {
+    public String getDatabaseName() {
         return dbName;
     }
 

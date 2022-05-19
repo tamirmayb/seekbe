@@ -2,28 +2,34 @@ package com.seekbe.parser.runnables;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seekbe.parser.Utils;
+import com.seekbe.parser.config.MongoConfig;
 import com.seekbe.parser.dto.requestDTO;
+import com.seekbe.parser.model.Method;
 import com.seekbe.parser.model.Request;
-import com.seekbe.parser.repositories.RequestRepository;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.SneakyThrows;
+import org.apache.commons.lang3.EnumUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.json.simple.parser.JSONParser;
+import org.springframework.data.mongodb.core.BulkOperations;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 @AllArgsConstructor
 public class ParserTask implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(ParserTask.class);
+
     private static final String NO_VALUE = "no_value";
     private static final String INDEX = "_index";
     private static final String SOURCE = "_source";
@@ -32,25 +38,20 @@ public class ParserTask implements Runnable {
     private static final String REQUEST_METHOD = "http.request.method";
     private static final String REQUEST_URI = "http.request.uri";
 
-    private RequestRepository requestRepository;
+    private final MongoConfig mongo;
+    private final String path;
+    private final String pathToRegex;
+    private final String backupPath;
+    private final int dbBatchSize;
 
-    @Getter
-    @Setter
-    private String path;
-
-    @Getter
-    @Setter
-    private String pathToRegex;
-
-    @Getter
-    @Setter
-    private String backupPath;
-
-    @SneakyThrows
     @Override
     public void run() {
-        log.info("starting path = " + path + "thread = " + Thread.currentThread().getName());
+        log.info("parsing file = " + path + " thread = " + Thread.currentThread().getName());
+
         try {
+            MongoOperations mongoOps = new MongoTemplate(mongo.mongoClient(), mongo.getDatabaseName());
+            List<Request> requestListBatch = Collections.synchronizedList(new ArrayList<>());
+
             JSONParser parser = new JSONParser();
             ObjectMapper mapper = new ObjectMapper();
             JSONArray jsonArray = (JSONArray) parser.parse(new FileReader(path));
@@ -73,16 +74,25 @@ public class ParserTask implements Runnable {
                             if (!requestMethod.equals(NO_VALUE) && !requestUri.equals(NO_VALUE)) {
                                 requestDTO dto = requestToDTO(requestMethod, requestUri);
                                 if (dto != null) {
-                                    Request save = requestRepository.save(Request.of(dto.getServiceName(), dto.getMethod(), dto.getUri()));
-                                    log.info("request saved, id = " + save.getId());
+                                    Method method = EnumUtils.getEnum(Method.class, dto.getMethod());
+                                    requestListBatch.add(Request.of(dto.getServiceName(), method, dto.getUri()));
                                     break;
                                 }
                             }
                         }
                     }
+                    if(requestListBatch.size() > dbBatchSize) {
+                        saveMongoBatch(mongoOps, requestListBatch);
+                        requestListBatch.clear();
+                    }
+
                 } catch (Exception innerEx) {
                     log.error("Error parsing request with index: " + index + " in file: " + path + " " + innerEx.getMessage());
                 }
+            }
+            if(requestListBatch.size() > 0) {
+                saveMongoBatch(mongoOps, requestListBatch);
+                requestListBatch.clear();
             }
             String backupFileName = backupPath + path.substring(path.lastIndexOf("/"));
             Utils.moveFile(path, backupFileName);
@@ -91,6 +101,12 @@ public class ParserTask implements Runnable {
         } catch (Exception e) {
             log.error("Error parsing input " + path + " " + e.getMessage());
         }
+    }
+
+    private void saveMongoBatch(MongoOperations mongoOps, List<Request> requestListBatch) {
+        BulkOperations bulkOps = mongoOps.bulkOps(BulkOperations.BulkMode.UNORDERED, Request.class);
+        bulkOps.insert(requestListBatch);
+        bulkOps.execute();
     }
 
     private requestDTO requestToDTO(String requestMethod, String requestUri) {

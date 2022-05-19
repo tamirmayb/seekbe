@@ -25,12 +25,12 @@ public class Request {
     private String serviceName;
 
     @JsonProperty
-    private String method;
+    private Method method;
 
     @JsonProperty
     private String path;
 
-    public static Request of(String serviceName, String method, String path) {
+    public static Request of(String serviceName, Method method, String path) {
         return Request.builder()
             .id(UUID.randomUUID().toString())
             .serviceName(serviceName)

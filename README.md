@@ -12,7 +12,7 @@ This is the traffic analyzer for the Seekret BE-Challenge, developed using Java 
 
 ### Using the web service
 * Start the server and go to http://localhost:8080/seekbe/api/swagger-ui.html#/sb-controller
-You should have access to Swagger api page which controls the web service. 
+You should have access to Swagger api page which controls the web service.
 
 ### Features
 You can find the following apis in the web service:
@@ -23,7 +23,7 @@ You can find the following apis in the web service:
 * Finds the service name from the uri filed and matches to regex.
 * If match found saves all data to Mongodb in ```requests``` table.
 * After a json file has been processed it will be moved to the backup folder regardless of any errors or issues during the process
-
+* Note: Because there's no need for an application monitoring ability the Parser will just wait until completion, then it will exit, and the call should return 'done'...
 ###### GET /sb/busy - 
 * retrieving N most “busy” services (busy service == with most requests to it) in descending order from db.
 

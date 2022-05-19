@@ -6,18 +6,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Getter
+@Setter
 public class requestDTO {
-
-    @Getter
-    @Setter
     private String serviceName;
-
-    @Getter
-    @Setter
     private String method;
-
-    @Getter
-    @Setter
     private String uri;
 
 }
