@@ -37,3 +37,21 @@ Also, the server can respond to dynamic changes of regex.json file (bonus 1)
 
 Please let me know if anything is missing or needs modifications. 
 ### Thanks!
+
+
+### Need to improve!!!!
+##### Naming - Unclear/wrong naming for some functions and variables
+* Utils.java: bad name for function checkRegexFile that checks that a file exists, var named directory but is actually a file.
+* Return values and errors:
+* SBController.java: all controllers return status code 400 regardless of the error that occurred
+* Returning string constants from service functions creates a weird  API
+* A recurring habit of logging errors rather than rethrowing and logging them in the correct context. This creates some odd code where return values are tested against null to check whether an exception occurred.
+##### Wrong use of SDKs
+* ParserTask.java: redundant use of synchronizedList as the variable is used by a single thread
+* ParserService.java: using sleep to wait for threads instead of other solutions
+* RequestService.java: using  mongo findAll query and filters on the results in memory rather than sending the matching query to Mongo
+* RequestService.java:82: using findAllAndRemove instead of remove
+##### Code flow and readability
+* ParserTask.java:74: using default values for checking existence rather than checking existence directly
+* ParserTask.java:116: parsing JSON string just to convert it back to a string
+* ParserTask.java: the run function is very crowded and difficult to read
