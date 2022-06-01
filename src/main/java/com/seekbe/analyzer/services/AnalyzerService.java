@@ -9,8 +9,12 @@ import com.seekbe.analyzer.repositories.RequestRepository;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @AllArgsConstructor
 @Service
@@ -35,6 +41,20 @@ public class AnalyzerService {
     private final ParserService process;
 
     public List<BusyDTO> getBusy(int limit) {
+        MongoOperations mongoOps = new MongoTemplate(mongo.mongoClient(), mongo.getDatabaseName());
+
+        List<AggregationOperation> operations = new ArrayList<>();
+        operations.add(group(SERVICE_NAME).count().as("count"));
+        operations.add(project("count").and("_id").as(SERVICE_NAME));
+        operations.add(sort(Sort.Direction.DESC, "count"));
+        operations.add(limit(limit));
+
+        TypedAggregation<Request> agg = Aggregation.newAggregation(Request.class, operations);
+        return mongoOps.aggregate(agg, BusyDTO.class).getMappedResults();
+    }
+
+    // this method uses RAM for the busy calculation, just to see that it's possible using java only...
+    public List<BusyDTO> getBusyUseRam(int limit) {
         log.info("starting getBusy");
 
         List<BusyDTO> busy = new ArrayList<>();
