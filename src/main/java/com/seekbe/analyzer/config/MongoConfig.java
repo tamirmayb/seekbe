@@ -1,4 +1,4 @@
-package com.seekbe.parser.config;
+package com.seekbe.analyzer.config;
 
 
 import com.mongodb.ConnectionString;
@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Configuration
-@EnableMongoRepositories(basePackages = "com.seekbe.parser.repositories")
+@EnableMongoRepositories(basePackages = "com.seekbe.analyzer.repositories")
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Value("${db.url}")
@@ -47,6 +47,6 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Override
     public Collection getMappingBasePackages() {
-        return Collections.singleton("com.seekbe.parser");
+        return Collections.singleton("com.seekbe.analyzer");
     }
 }

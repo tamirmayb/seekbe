@@ -1,7 +1,7 @@
-package com.seekbe.parser.repositories;
+package com.seekbe.analyzer.repositories;
 
-import com.seekbe.parser.model.Method;
-import com.seekbe.parser.model.Request;
+import com.seekbe.analyzer.model.Method;
+import com.seekbe.analyzer.model.Request;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

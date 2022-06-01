@@ -1,15 +1,14 @@
-package com.seekbe.parser.services;
+package com.seekbe.analyzer.services;
 
 import com.google.common.collect.Lists;
-import com.seekbe.parser.config.MongoConfig;
-import com.seekbe.parser.dto.BusyDTO;
-import com.seekbe.parser.model.Method;
-import com.seekbe.parser.model.Request;
-import com.seekbe.parser.repositories.RequestRepository;
+import com.seekbe.analyzer.config.MongoConfig;
+import com.seekbe.analyzer.dto.BusyDTO;
+import com.seekbe.analyzer.model.Method;
+import com.seekbe.analyzer.model.Request;
+import com.seekbe.analyzer.repositories.RequestRepository;
+import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -22,23 +21,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @Service
-public class RequestService {
-    private static final Logger log = LogManager.getLogger(RequestService.class);
+public class AnalyzerService {
+    private static final Logger log = LogManager.getLogger(AnalyzerService.class);
 
     private static final String SERVICE_NAME = "serviceName";
 
-    @Autowired
-    private MongoConfig mongo;
+    private final MongoConfig mongo;
 
-    @Autowired
-    private RequestRepository requestRepository;
+    private final RequestRepository requestRepository;
 
-    @Autowired
-    private ParserService process;
-
-    @Value("${parser.workers}")
-    private Integer workers;
+    private final ParserService process;
 
     public List<BusyDTO> getBusy(int limit) {
         log.info("starting getBusy");
@@ -79,7 +73,7 @@ public class RequestService {
         MongoOperations mongoOps = new MongoTemplate(mongo.mongoClient(), mongo.getDatabaseName());
         Query query = new Query();
         query.addCriteria(Criteria.where(SERVICE_NAME).is(serviceName));
-        mongoOps.findAllAndRemove(query, Request.class);
+        mongoOps.remove(query, Request.class);
         return "done";
     }
 }

@@ -1,4 +1,4 @@
-package com.seekbe.parser;
+package com.seekbe.analyzer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

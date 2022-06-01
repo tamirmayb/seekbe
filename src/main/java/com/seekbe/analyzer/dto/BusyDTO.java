@@ -1,4 +1,4 @@
-package com.seekbe.parser.dto;
+package com.seekbe.analyzer.dto;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.AllArgsConstructor;

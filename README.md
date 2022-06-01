@@ -1,14 +1,14 @@
-# Seekret - BE - Traffic Analyzer
+# BE - Traffic Analyzer
 ### Author: Tamir Mayblat
 
-This is the traffic analyzer for the Seekret BE-Challenge, developed using Java as a spring boot application.
+This is the traffic analyzer for the BE-Challenge, developed using Java as a spring boot application.
 
 ### Prerequisite
 * Java and tomcat
 * Run ```mvn clean install```
 * Make sure that regex.json file in the project's resources folder, it should be there by default.
 * In application.properties you can set parser defaults (number of workers and paths), note that these properties are filled by default and can be changed as needed.
-* Connection to Mongodb is also provided by default and can be changed if needed in application.properties.
+* Connection to Mongodb is also provided by default and can be changed if needed by modifying the fields starting with ```db.``` in application.properties
 
 ### Using the web service
 * Start the server and go to http://localhost:8080/seekbe/api/swagger-ui.html#/sb-controller

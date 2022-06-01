@@ -1,4 +1,4 @@
-package com.seekbe.parser.model;
+package com.seekbe.analyzer.model;
 
 public enum Method {
     GET,

@@ -1,4 +1,4 @@
-package com.seekbe.parser.dto;
+package com.seekbe.analyzer.dto;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import lombok.*;
 @ToString
 @Getter
 @Setter
-public class requestDTO {
+public class RequestDTO {
     private String serviceName;
     private String method;
     private String uri;

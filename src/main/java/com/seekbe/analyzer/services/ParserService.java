@@ -1,8 +1,8 @@
-package com.seekbe.parser.services;
+package com.seekbe.analyzer.services;
 
-import com.seekbe.parser.Utils;
-import com.seekbe.parser.config.MongoConfig;
-import com.seekbe.parser.runnables.ParserTask;
+import com.seekbe.analyzer.Utils;
+import com.seekbe.analyzer.config.MongoConfig;
+import com.seekbe.analyzer.runnables.ParserTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +44,9 @@ public class ParserService {
         log.info("Parsing started, workers = " + workers);
 
         ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(workers);
-        Utils.checkBackupDir(backupPath); //create backup directory automatically if not exists.
 
         try (Stream<Path> paths = Files.walk(Paths.get(path))) {
+            Utils.checkBackupDir(backupPath); //create backup directory automatically if not exists.
             Utils.checkRegexFile(pathToRegex);
             paths
                 .filter(Files::isRegularFile)
@@ -55,9 +55,6 @@ public class ParserService {
                     ParserTask task = new ParserTask(mongo, path.toString(), pathToRegex, backupPath, batchSize);
                     executor.execute(task);
                 });
-            while (executor.getActiveCount() > 0) {
-                Thread.sleep(5000);
-            }
             return "done";
 
         } catch (Exception e) {
