@@ -53,7 +53,7 @@ public class AnalyzerService {
         return mongoOps.aggregate(agg, BusyDTO.class).getMappedResults();
     }
 
-    // this method uses RAM for the busy calculation, just to see that it's possible using java only...
+    // DO NOT USE, this method uses RAM for the busy calculation, just to see that it's possible using java only...
     public List<BusyDTO> getBusyUseRam(int limit) {
         log.info("starting getBusy");
 
